@@ -38,11 +38,12 @@ $(function () {
     if(mostRecent != -1){
       socket.emit('join_game',
         {room: $('#roomID').val(), name: $('#name').val(), team: mostRecent},
-        function (result, new_uuid) {
+        function (result, new_uuid, lockedout) {
           if (result === 'success') {
             uuid = new_uuid;
             $("#signin").remove();
             $('#buzzer').show();
+            if (lockedout) lockout();
           } else if (result === 'malformed') {
             addAlert('Check your inputs. Names must be less than 15 characters.');
           } else if (result === 'room_id') {
@@ -67,6 +68,10 @@ $(function () {
   socket.on('lockout', function (message) {
     lockout();
     socket.emit('lock_res', {lockout_id: message.lockout_id});
+  });
+
+  socket.on('reset_lockout', function (message) {
+    clear();
   });
 
   socket.on('winner', function (message) {

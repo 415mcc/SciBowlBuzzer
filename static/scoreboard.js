@@ -174,10 +174,6 @@ $(document).ready(function () {
     }
   });
 
-  $('#lockout-btn').click(function (e) {
-    // TODO: implement pls
-  });
-
   var socket = io();
   socket.on('connect', function () {
     socket.emit('new_game', null, function (room_id) {
@@ -185,13 +181,14 @@ $(document).ready(function () {
     });
   });
 
-  socket.on('lockout', function (message) {
-    lockout();
+  $('#lockout-btn').click(function (e) {
+    socket.emit('reset_lockout', function (result) {
+      if (result === 'success') unlockout();
+    });
   });
 
-  socket.on('winner', function (message) {
-    // TODO: pls implement me
-    console.log(message.uuid);
+  socket.on('lockout', function (message) {
+    lockout();
   });
 
   socket.on('new_user', function (message) {

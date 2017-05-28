@@ -79,16 +79,16 @@ def join_game(message):
     team = message.get('team', None)
     if (room is None or name is None or len(name) > settings.name_len or
             team is None or (team != 0 and team != 1)):
-        return 'malformed', ''
+        return 'malformed', '', False
     game = Game.query.filter_by(room_id=room).first()
     if game is None:
-        return 'room_id', ''
+        return 'room_id', '', False
     user = User(name=name, game=game, sid=request.sid, uuid=new_uuid(game), team=team)
     db.session.add(user)
     db.session.commit()
     join_room(room)
     emit('new_user', {'uuid': user.uuid, 'name': Markup.escape(name), 'team': team}, room=game.sid)
-    return 'success', user.uuid
+    return 'success', user.uuid, game.lockedout
 
 
 @socketio.on('buzz')
@@ -151,6 +151,18 @@ def disconnect_handler():
             close_room(game.room_id)
             db.session.delete(game)
             db.session.commit()
+
+
+@socketio.on('reset_lockout')
+def reset_lockout():
+    game = Game.query.filter_by(sid=request.sid).first()
+    if game is not None:
+        game.lockedout = False
+        db.session.add(game)
+        db.session.commit()
+        emit('reset_lockout', {}, room=game.room_id)
+        return 'success'
+    return 'failure'
 
 
 @app.route('/h', methods=['GET'])
