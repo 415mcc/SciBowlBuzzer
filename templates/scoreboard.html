@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <style>
-      #scoreboard{
+      #scoreboard {
         margin-top: 10px;
       }
-      #mainClockPause{
+      #mainClockPause {
         display: none;
       }
-      #alertRoomID{
-        width: 25%;
-
+      #lockout-btn {
+        margin-bottom: 5%;
+        width: 100%;
       }
       .panel-footer .btn-group button {
         min-width: 40%;
@@ -44,7 +44,7 @@
     <div class="container-fluid" id="scoreboard">
       <div class="jumbotron">
         <div class="row">
-          <button type="button" id="tossupClock" class="btn btn-default text-center col-md-4">5</button>
+          <button type="button" id="tossupClock" class="btn btn-default btn-lg text-center col-md-4">5</button>
           <div class="col-md-4">
             <div class="panel panel-default">
               <div class="panel-body">
@@ -52,13 +52,13 @@
               </div>
               <div class="panel-footer">
                 <div class="center-group text-center">
-                  <button type="button" id="mainClockPlay" class="btn btn-large btn-default">Play</button>
-                  <button type="button" id="mainClockReset" class="btn btn-large btn-default">Reset</button>
-                  <button type="button" id="mainClockAddMin" class="btn btn-large btn-default">Min +</button>
-                  <button type="button" id="mainClockSubMin" class="btn btn-large btn-default">Min -</button>
+                  <button type="button" id="mainClockPlay" class="btn btn-lg btn-default">Play</button>
+                  <button type="button" id="mainClockReset" class="btn btn-lg btn-default">Reset</button>
+                  <button type="button" id="mainClockAddMin" class="btn btn-lg btn-default">Min +</button>
+                  <button type="button" id="mainClockSubMin" class="btn btn-lg btn-default">Min -</button>
                 </div>
                 <div class="row">
-                  <button type="button" id="mainClockPause" class="btn btn-large btn-default text-left col-md-offset-4 col-md-4">Pause</button>
+                  <button type="button" id="mainClockPause" class="btn btn-lg btn-default text-left col-md-offset-4 col-md-4">Pause</button>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
 
 
           </div>
-          <button type="button" id="bonusClock" class="btn btn-default text-center col-md-4">20</button>
+          <button type="button" id="bonusClock" class="btn btn-default btn-lg text-center col-md-4">20</button>
         </div>
         <div class="row">
           <div class="col-md-4">
@@ -88,6 +88,9 @@
           </div>
           <div class="text-center center-group col-md-4">
             <button type="button" id="lockout-btn" class="btn btn-lg btn-default" disabled>Clear</button>
+            <div class="alert alert-info center-block">
+              <h1 class="text-center" id="roomID">Waiting...</h1>
+            </div>
           </div>
           <div class="col-md-4">
             <div class="panel panel-danger">
@@ -106,10 +109,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="footer navbar-fixed-bottom alert alert-info center-block" role="alert" id="alertRoomID">
-        <h1 class="text-center" id="roomID">Waiting...</h1>
       </div>
     </div>
 
