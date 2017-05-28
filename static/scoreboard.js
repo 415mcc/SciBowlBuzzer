@@ -9,6 +9,7 @@ var tossupTimerID;
 var tossupIsTiming = false;
 var mainIsTiming = false;
 var lockedout = false;
+var lastWinner = null;
 var players = {};
 var teamscore = {0: 0, 1: 0};
 
@@ -26,6 +27,7 @@ function unlockout () {
     .removeClass('btn-primary')
     .addClass('btn-default')
     .prop('disabled', true);
+  if (lastWinner) lastWinner.removeClass('list-group-item-success');
 }
 
 function setTeamScore (team, score) {
@@ -239,5 +241,14 @@ $(document).ready(function () {
       });
     obj.elem = li;
     players[message.uuid] = obj;
-  })
+  });
+
+  socket.on('user_exit', function (message) {
+    players[message.uuid].elem.remove();
+  });
+
+  socket.on('winner', function (message) {
+    lastWinner = players[message.uuid].elem;
+    lastWinner.addClass('list-group-item-success');
+  });
 });
