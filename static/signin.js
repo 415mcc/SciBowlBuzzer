@@ -1,24 +1,26 @@
+var uuid = '';
+
 function addAlert (text) {
-  $('<div class="alert alert-danger" role="alert">' + text + '</div>').prependTo('#signin');
+  var elem = $('#signin')
+  elem = elem.length != 0 ? elem : $('#buzzer');
+  elem.prepend('<div class="alert alert-danger" role="alert">' + text + '</div>');
 }
-function didwin(){
-
-  $('#buzzer form button').removeClass('btn-danger btn-default').removeClass('btn-default').addClass('btn-success')
-
+function didwin (){
+  $('#buzzer form button').removeClass('btn-danger btn-default').addClass('btn-success').prop('disabled', true);
 }
-function lockout(){
-  $('#buzzer form button').removeClass('btn-danger btn-success').addClass('btn-default')
+function lockout (){
+  $('#buzzer form button').removeClass('btn-danger btn-success').addClass('btn-default').prop('disabled', true);
 }
-function clear(){
-  $('#buzzer form button').removeClass('btn-default btn-success').addClass('btn-danger')
+function clear (){
+  $('#buzzer form button').removeClass('btn-default btn-success').addClass('btn-danger').prop('disabled', false);
 }
-// var ts = timesync.create({
-//   peers: '',
-//   interval: 10000
-// });
+var ts = timesync.create({
+  server: '/timesync',
+  interval: 10000
+});
 $(function () {
- //var socket = io();
-  var mostRecent=-1;
+  var socket = io();
+  var mostRecent = -1;
   $('#A').click(function(e){
     var el = $(e.target)
     mostRecent = 0
@@ -33,27 +35,46 @@ $(function () {
   });
   $('#signin-form').submit(function(){
     $('#signin .alert').remove();
-    if(mostRecent!=-1){
-      console.log($('#roomID').val());
-      console.log($('#name').val());
-      console.log(mostRecent);
-      // socket.emit('room id', $('#roomID').val());
-      // $('#roomID').val('');
-      // socket.emit('name', $('#name').val());
-      // $('#name').val('');
-
-      $("#signin").remove();
-      $('#buzzer').show()
-
+    if(mostRecent != -1){
+      socket.emit('join_game',
+        {room: $('#roomID').val(), name: $('#name').val(), team: mostRecent},
+        function (result, new_uuid) {
+          if (result === 'success') {
+            uuid = new_uuid;
+            $("#signin").remove();
+            $('#buzzer').show();
+          } else if (result === 'malformed') {
+            addAlert('Check your inputs. Names must be less than 15 characters.');
+          } else if (result === 'room_id') {
+            addAlert('Cannot locate game with the given ID.');
+          }
+      });
     } else {
-      addAlert('You must choose a team.')
+      addAlert('You must choose a team.');
     }
     return false;
   });
-  $('#buzzer form').submit(function(){
-    // var now = new Date(ts.now());
-    // console.log('now: ' + now.toISOString() + ' ms');
+  $('#buzzer form').submit(function () {
+    $('#buzzer .alert').remove();
+    socket.emit('buzz', {time: ts.now()}, function (result) {
+      if (result === 'malformed' || result === 'unknown_user') {
+        addAlert('An error occured.');
+      }
+    });
     return false;
   });
 
+  socket.on('lockout', function (message) {
+    lockout();
+    socket.emit('lock_res', {lockout_id: message.lockout_id});
+  });
+
+  socket.on('winner', function (message) {
+    if (message.uuid === uuid) didwin();
+  });
+
+  socket.on('game_over', function (message) {
+    lockout();
+    addAlert('Game over!');
+  })
 });

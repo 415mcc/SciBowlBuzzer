@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>SBowl Scoreboard</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -21,10 +21,27 @@
       .panel-footer .btn-group button {
         min-width: 40%;
       }
+      h2.panel-title {
+        display: inline;
+        font-size: 200%;
+      }
+      .panel-heading button {
+        min-height: 100%;
+      }
+      .panel-heading div {
+        float: right;
+      }
+      .panel-body ul li h4 {
+        display: inline;
+      }
+      .panel-body ul li div {
+        display: inline;
+        float: right;
+      }
     </style>
   </head>
   <body>
-    <div class="container-fluid center-block", id="scoreboard">
+    <div class="container-fluid" id="scoreboard">
       <div class="jumbotron">
         <div class="row">
           <button type="button" id="tossupClock" class="btn btn-default text-center col-md-4">5</button>
@@ -52,9 +69,42 @@
           </div>
           <button type="button" id="bonusClock" class="btn btn-default text-center col-md-4">20</button>
         </div>
-        <div class="text-center center-group" id="clearBuzzers">
-          <button type="button" id="clearBuzzerButton" class="btn btn-lg btn-info">Clear</button
-
+        <div class="row">
+          <div class="col-md-4">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h2 class="panel-title">Team A</h2>
+                <div>
+                  <button type="button" class="btn btn-default">Score: <span id="editable-a" class="editable-score" contenteditable>0</span></button>
+                  <button type="button" class="btn btn-default" id="a-inc-4">+4</button>
+                  <button type="button" class="btn btn-default" id="a-inc-10">+10</button>
+                </div>
+              </div>
+              <div class="panel-body">
+                <ul class="list-group" id="members-a"></ul>
+              </div>
+              <div class="panel-footer">* Score is editable in case of mistakes.</div>
+            </div>
+          </div>
+          <div class="text-center center-group col-md-4">
+            <button type="button" id="lockout-btn" class="btn btn-lg btn-default" disabled>Clear</button>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <h2 class="panel-title">Team B</h2>
+                <div>
+                  <button type="button" class="btn btn-default">Score: <span id="editable-b" class="editable-score" contenteditable>0</span></button>
+                  <button type="button" class="btn btn-default" id="b-inc-4">+4</button>
+                  <button type="button" class="btn btn-default" id="b-inc-10">+10</button>
+                </div>
+              </div>
+              <div class="panel-body">
+                <ul class="list-group" id="members-b"></ul>
+              </div>
+              <div class="panel-footer">* Score is editable in case of mistakes.</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -62,39 +112,10 @@
         <h1 class="text-center" id="roomID">Waiting...</h1>
       </div>
     </div>
-    <div class="row">
-      <div class="container-fluid jumbotron col-md-4" id="teamAScoreboard">
-          <h5 class=col-md-3>Team A:</h5>
-          <button type="button" class="btn btn-default col-md-3" contenteditable>Score</button>
-          <button type="button" class="btn btn-default col-md-1.5">+10</button>
-          <button type="button" class="btn btn-default col-md-1.5">-10</button>
-          <button type="button" class="btn btn-default col-md-1.5">+4</button>
-          <button type="button" class="btn btn-default col-md-1.5">-4</button>
-      </div>
-      <div class="container-fluid jumbotron col-md-4 col-md-offset-4" id="teamBScoreboard">
-          <h5 class=col-md-3 id="teamBName">Team B:</h5>
-          <button type="button" class="btn btn-default col-md-3" contenteditable>Score</button>
-          <button type="button" class="btn btn-default col-md-1.5">+10</button>
-          <button type="button" class="btn btn-default col-md-1.5">-10</button>
-          <button type="button" class="btn btn-default col-md-1.5">+4</button>
-          <button type="button" class="btn btn-default col-md-1.5">-4</button>
-
-        <div class="row">
-
-        </div>
-      </div>
-    </div>
-
-
-
-
-
-
-
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="scoreboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js" integrity="sha256-fiM0lX3OYzf0FfLBeLqFuCokh+rf1VhI/eanPbzldUM=" crossorigin="anonymous"></script>
+    <script src="/static/scoreboard.js"></script>
   </body>
 </html>

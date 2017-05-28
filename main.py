@@ -1,5 +1,5 @@
-from flask import Flask, json, abort, request
-from flask_socketio import SocketIO, join_room, close_room, send, emit
+from flask import Flask, json, abort, request, render_template, Markup
+from flask_socketio import SocketIO, join_room, close_room, emit
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 from datetime import datetime
@@ -46,9 +46,9 @@ class User(db.Model):
 
 
 def new_uuid(game):
-    uuidstr = uuid4()
+    uuidstr = uuid4().hex
     while game.users.filter_by(uuid=uuidstr).count() > 0:
-        uuidstr = uuid4()
+        uuidstr = uuid4().hex
     return uuidstr
 
 
@@ -68,6 +68,7 @@ def new_game(message):
     game = Game(room_id=room_id, sid=request.sid)
     db.session.add(game)
     db.session.commit()
+    print('new_game:', room_id)
     return room_id
 
 
@@ -86,13 +87,13 @@ def join_game(message):
     db.session.add(user)
     db.session.commit()
     join_room(room)
-    emit('new_user', {'uuid': user.uuid, 'name': name, 'team': team}, room=game.sid)
+    emit('new_user', {'uuid': user.uuid, 'name': Markup.escape(name), 'team': team}, room=game.sid)
     return 'success', user.uuid
 
 
 @socketio.on('buzz')
 def buzz(message):
-    time = message.get('room', None)
+    time = message.get('time', None)
     if time is None:
         return 'malformed'
     user = User.query.filter_by(sid=request.sid).first()
@@ -150,6 +151,16 @@ def disconnect_handler():
             close_room(game.room_id)
             db.session.delete(game)
             db.session.commit()
+
+
+@app.route('/h', methods=['GET'])
+def scoreboard():
+    return render_template('scoreboard.html')
+
+
+@app.route('/', methods=['GET'])
+def buzzer():
+    return render_template('login.html')
 
 
 @app.route('/timesync', methods=['POST'])

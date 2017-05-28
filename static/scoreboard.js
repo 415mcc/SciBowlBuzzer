@@ -8,6 +8,32 @@ var bonusIsTiming = false;
 var tossupTimerID;
 var tossupIsTiming = false;
 var mainIsTiming = false;
+var lockedout = false;
+var players = {};
+var teamscore = {0: 0, 1: 0};
+
+function lockout () {
+  lockedout = true;
+  $('#lockout-btn')
+    .removeClass('btn-default')
+    .addClass('btn-primary')
+    .prop('disabled', false);
+}
+
+function unlockout () {
+  lockedout = false;
+  $('#lockout-btn')
+    .removeClass('btn-primary')
+    .addClass('btn-default')
+    .prop('disabled', true);
+}
+
+function setTeamScore (team, score) {
+  teamscore[team] = score;
+  var id = team === 0 ? '#editable-a' : '#editable-b'
+  $(id).text(score);
+}
+
 function mainDownSec(){
   if(mainClockTime>0){
     mainClockTime--;
@@ -38,7 +64,7 @@ function tossupDownSec(){
     tossupClockTime--;
     $("#tossupClock").text(tossupClockTime);
   }else{
-    $("#tossupClock").removeClass('btn-default').addClass('btn-danger')
+    $("#tossupClock").removeClass('btn-default').addClass('btn-danger');
   }
 }
 function updateTime(){
@@ -49,7 +75,40 @@ function updateTime(){
     $("#mainClock").text(Math.floor(mainClockTime/60)+":"+ mainClockTime%60)
   }
 }
-$(function(){
+$(document).ready(function () {
+  $('#a-inc-4').click(function () {
+    setTeamScore(0, teamscore[0] + 4);
+  });
+
+  $('#a-inc-10').click(function () {
+    setTeamScore(0, teamscore[0] + 10);
+  });
+
+  $('#b-inc-4').click(function () {
+    setTeamScore(1, teamscore[1] + 4);
+  });
+
+  $('#b-inc-10').click(function () {
+    setTeamScore(1, teamscore[1] + 10);
+  });
+
+  $('#editable-a').blur(function () {
+    var num = Number($(this).text());
+    if (num) {
+      setTeamScore(0, num);
+    } else {
+      $(this).text(old);
+    }
+  });
+
+  $('#editable-b').blur(function () {
+    var num = Number($(this).text());
+    if (num) {
+      setTeamScore(1, num);
+    } else {
+      $(this).text(old);
+    }
+  });
 
   $('#mainClockPlay').click(function(e){
     var el = $(e.target)
@@ -112,4 +171,73 @@ $(function(){
       tossupTimerID = setInterval(tossupDownSec, 1000);
     }
   });
+
+  $('#lockout-btn').click(function (e) {
+    // TODO: implement pls
+  });
+
+  var socket = io();
+  socket.on('connect', function () {
+    socket.emit('new_game', null, function (room_id) {
+      $('#roomID').text(room_id);
+    });
+  });
+
+  socket.on('lockout', function (message) {
+    lockout();
+  });
+
+  socket.on('winner', function (message) {
+    // TODO: pls implement me
+    console.log(message.uuid);
+  });
+
+  socket.on('new_user', function (message) {
+    var obj = {name: message.name, team: message.team, score: 0};
+    var teamlist = message.team === 0 ? '#members-a' : '#members-b';
+    var div = $('<div>');
+    var li = $('<li>')
+      .addClass('list-group-item')
+      .appendTo(teamlist)
+      .append('<h4>' + message.name + '</h4>')
+      .append(div);
+    var editable = $('<span class="editable-score" contenteditable>0</span>');
+    $('<span class="btn btn-xs btn-default">Score: </span>')
+      .appendTo(div)
+      .append(editable);
+    editable.blur(function () {
+      var team = message.team;
+      var uuid = message.uuid;
+      var old = players[uuid].score;
+      var num = Number($(this).text());
+      if (num) {
+        players[uuid].score = num;
+        setTeamScore(team, teamscore[team] + (num - old));
+      } else {
+        $(this).text(old);
+      }
+    });
+    $('<span class="btn btn-xs btn-default">-4</span>')
+      .appendTo(div)
+      .click(function () {
+        var team = message.team;
+        var ed = editable;
+        var uuid = message.uuid;
+        players[uuid].score += -4;
+        setTeamScore(team, teamscore[team] - 4);
+        ed.text(players[uuid].score);
+      });
+    $('<span class="btn btn-xs btn-default">+4</span>')
+      .appendTo(div)
+      .click(function () {
+        var team = message.team;
+        var ed = editable;
+        var uuid = message.uuid;
+        players[uuid].score += 4;
+        setTeamScore(team, teamscore[team] + 4);
+        ed.text(players[uuid].score);
+      });
+    obj.elem = li;
+    players[message.uuid] = obj;
+  })
 });
