@@ -20,6 +20,7 @@ class TV:
     name_len = 15
     github_link = 'https://github.com/lachm/SciBowlBuzzer'
     site_title = 'SciBowlBuzzer'
+    locale = 'en_US'
 
 # --End Settings--
 
