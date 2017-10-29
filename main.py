@@ -1,10 +1,11 @@
-from flask import Flask, json, abort, request, render_template, Markup
+from flask import Flask, json, abort, request, render_template, url_for, Markup, Response
 from flask_socketio import SocketIO, join_room, close_room, emit
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 from datetime import datetime
 from random import randrange
 import settings
+import functools
 
 app = Flask(__name__)
 app.config.update(settings.config)
@@ -20,7 +21,7 @@ class Game(db.Model):
     lock_res_cnt = db.Column(db.Integer, default=0)
     lock_res_cnt_req = db.Column(db.Integer, default=0)
     lockout_id = db.Column(db.Integer, default=0)
-    earliest_buzz = db.Column(db.Integer, default=None, nullable=True)
+    earliest_buzz = db.Column(db.BigInteger, default=None, nullable=True)
     eb_uuid = db.Column(db.String(32), default='')
     sid = db.Column(db.String(32))
 
@@ -172,7 +173,7 @@ def scoreboard():
 
 @app.route('/', methods=['GET'])
 def buzzer():
-    return render_template('login.html')
+    return render_template('login.html', scoreboard_url=url_for('scoreboard'))
 
 
 @app.route('/timesync', methods=['POST'])
@@ -182,3 +183,10 @@ def timesync():
         abort(400)
     result = int(datetime.now().timestamp() * 1000)
     return json.jsonify(jsonrpc='2.0', id=id, result=result)
+
+
+@app.route('/sitemap.txt', methods=['GET'])
+def text_sitemap():
+    resp = '\n'.join(map(functools.partial(url_for, _external=True),
+                         ['buzzer', 'scoreboard']))
+    return Response(resp, mimetype='text/plain')

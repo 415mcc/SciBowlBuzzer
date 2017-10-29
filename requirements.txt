@@ -1,0 +1,6 @@
+Flask==0.12.2
+Flask-SocketIO==2.9.2
+gevent-websocket==0.10.1
+gunicorn==19.7.1
+Flask-SQLAlchemy==2.2
+psycopg2==2.7.3.1
