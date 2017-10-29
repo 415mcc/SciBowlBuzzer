@@ -46,6 +46,10 @@ class User(db.Model):
                                                    'A' if self.team == 0 else 'B')
 
 
+def render_with_tv(*args, **kwargs):
+    return render_template(*args, tv=settings.TV, **kwargs)
+
+
 def new_uuid(game):
     uuidstr = uuid4().hex
     while game.users.filter_by(uuid=uuidstr).count() > 0:
@@ -168,12 +172,12 @@ def reset_lockout():
 
 @app.route('/h', methods=['GET'])
 def scoreboard():
-    return render_template('scoreboard.html')
+    return render_with_tv('scoreboard.html')
 
 
 @app.route('/', methods=['GET'])
 def buzzer():
-    return render_template('login.html', scoreboard_url=url_for('scoreboard'))
+    return render_with_tv('login.html', scoreboard_url=url_for('scoreboard'))
 
 
 @app.route('/timesync', methods=['POST'])

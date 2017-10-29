@@ -45,7 +45,8 @@ $(function () {
             $('#buzzer').show();
             if (lockedout) lockout();
           } else if (result === 'malformed') {
-            addAlert('Check your inputs. Names must be less than 15 characters.');
+            addAlert('Check your inputs. Names must be less than ' + tvNameLen +
+                     ' characters.');
           } else if (result === 'room_id') {
             addAlert('Cannot locate game with the given ID.');
           }
