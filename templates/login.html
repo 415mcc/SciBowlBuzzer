@@ -4,14 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="robots" content="index, follow">
-    <meta name="og:type" content="website">
-    <meta name="og:site_name" content="{{ tv.site_title }}">
-    <meta name="og:url" content="{{ request.base_url }}">
-    <meta name="og:locale" content="{{ tv.locale }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ tv.site_title }}">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta property="og:locale" content="{{ tv.locale }}">
     {% set description = 'Join a ' + tv.site_title + ' room and buzz away! ' + tv.site_title + ' replaces the traditional physical Science Bowl buzzer with a web application.' %}
     <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
     {% set title = 'Join a Room - ' + tv.site_title %}
-    <meta name="og:title" content="{{ title }}">
+    <meta property="og:title" content="{{ title }}">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
