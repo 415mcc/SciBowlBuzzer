@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Login</title>
+    <title>Join a Room - {{ tv.site_title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <style>
@@ -18,7 +18,7 @@
         height: 95vh;
 
       }
-      #createroom {
+      .foottext {
         margin: 1vh auto;
       }
     </style>
@@ -29,22 +29,27 @@
   <body>
     <div class="container-fluid" id="signin">
       <form id="signin-form">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="roomID" class="sr-only">RoomID</label>
-        <input type="tel" id="roomID" class="form-control" placeholder="Room ID" required autocomplete="off" maxlength="{{ tv.room_id_len }}">
-        <br>
-        <label for="name" class="sr-only">Name</label>
-        <input type="text" id="name" class="form-control" placeholder="Name" required autocomplete="off" maxlength="{{ tv.name_len }}">
-        <br>
-        <div class="btn-group" role="group">
-          <button type="button" id="A" class="btn btn-default">A</button>
-          <button type="button" id="B" class="btn btn-default">B</button>
+        <h2 class="form-signin-heading">Join a Room</h2>
+        <div class="form-group">
+          <label for="roomID">Room ID</label>
+          <input type="tel" id="roomID" class="form-control" placeholder="Room ID" required autocomplete="off" maxlength="{{ tv.room_id_len }}">
         </div>
-        <br>
-        <br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Start</button>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" placeholder="Name" required autocomplete="off" maxlength="{{ tv.name_len }}">
+        </div>
+        <div class="form-group">
+          <label for="team">Team</label>
+          <br>
+          <div id="team" class="btn-group" role="group">
+            <button type="button" id="A" class="btn btn-default">A</button>
+            <button type="button" id="B" class="btn btn-default">B</button>
+          </div>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
       </form>
-      <p id="createroom"><a href="{{ scoreboard_url }}">Click here</a> to create a room.</p>
+      <p class="foottext"><a href="{{ scoreboard_url }}">Click here</a> to create a room.</p>
+      <p class="foottext"><a href="{{ tv.github_link }}">Click here</a> to see the source code.</p>
     </div>
     <div class="container-fluid" id="buzzer">
       <form>

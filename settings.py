@@ -18,6 +18,8 @@ config = {
 class TV:
     room_id_len = 6
     name_len = 15
+    github_link = 'https://github.com/lachm/SciBowlBuzzer'
+    site_title = 'SciBowlBuzzer'
 
 # --End Settings--
 
